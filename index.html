@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skipper Ready</title>
+<meta name="description" content="Learn everything in the WA Recreational Skipper's Ticket workbook, one short page at a time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4EFE3; --paper-2:#EAE3D2; --paper-3:#DED5BF;
+  --ink:#12263A; --ink-2:#3B4F64; --ink-3:#6E7F90; --line:#C9BFA6;
+  --sea-1:#D6E8E9; --sea-2:#A9CDD3; --sea-3:#6FA6B6; --sea-4:#2F6F86; --deep:#173F55;
+  --port:#C8352B; --stbd:#1C8A4F; --buoy:#F0B21A; --sand:#E9D9B0; --land:#D8CCAD;
+  --white:#FFFDF8; --night:#0B1626; --night-2:#14263D;
+  --good:#1C8A4F; --bad:#C8352B;
+  --head:'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --body:'Atkinson Hyperlegible', 'Segoe UI', Arial, sans-serif;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--buoy);outline-offset:2px}
+#app{min-height:100%}
+
+/* ---------- top bar ---------- */
+.bar{display:flex;align-items:center;gap:14px;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--paper);position:sticky;top:0;z-index:5}
+.bar .home{display:flex;align-items:center;gap:8px;border:0;background:none;padding:6px 8px;margin-left:-8px;border-radius:8px;font-family:var(--head);font-weight:600;font-size:18px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink-2)}
+.bar .home:hover{background:var(--paper-2)}
+.bar .home svg{width:22px;height:22px}
+.bar .where{font-family:var(--head);font-weight:600;font-size:18px;letter-spacing:.02em;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.bar .where b{color:var(--port);margin-right:6px}
+.prog{height:4px;background:var(--paper-3);position:absolute;left:0;right:0;bottom:-1px}
+.prog i{display:block;height:100%;background:var(--ink);width:0;transition:width .5s ease}
+.teacher-badge{font-family:var(--head);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.06em;background:var(--buoy);color:var(--ink);padding:2px 8px;border-radius:6px}
+
+/* ---------- page ---------- */
+.page{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr);gap:28px;padding:24px 28px 28px;max-width:1440px;margin:0 auto;min-height:calc(100vh - 57px);align-items:start}
+.stage{position:relative;background:var(--paper-2);border-radius:var(--r);overflow:hidden;aspect-ratio:4/3;box-shadow:inset 0 0 0 1px var(--line);position:sticky;top:80px}
+.stage>svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.stage.night{background:var(--night)}
+.card{display:flex;flex-direction:column;min-height:min(70vh,640px);padding:6px 4px 0}
+.kicker{font-family:var(--head);font-weight:600;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:flex;align-items:center;gap:8px}
+.kicker:before{content:"";width:18px;height:3px;border-radius:2px;background:var(--port)}
+.kicker.watch:before{background:var(--sea-4)} .kicker.try:before{background:var(--stbd)} .kicker.check:before,.kicker.review:before{background:var(--buoy)}
+.card h1{font-family:var(--head);font-weight:700;font-size:40px;line-height:1.02;letter-spacing:.005em;margin:10px 0 14px;color:var(--ink)}
+.body p{margin:0 0 12px}
+.body ul{margin:0 0 12px;padding-left:22px}
+.body li{margin:0 0 6px}
+.body b{color:var(--ink)}
+.body .note{font-size:16px;color:var(--ink-2);border-left:3px solid var(--buoy);padding:2px 0 2px 12px}
+.body .term{font-weight:700;border-bottom:2px solid var(--buoy)}
+.task{margin-top:6px}
+.spacer{flex:1}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px 0 4px;margin-top:16px;border-top:1px solid var(--line)}
+.btn{border:0;border-radius:12px;padding:12px 22px;font-family:var(--head);font-weight:700;font-size:20px;letter-spacing:.04em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;transition:transform .12s ease, background .2s, opacity .2s}
+.btn:active{transform:translateY(1px)}
+.btn.next{background:var(--ink);color:var(--white)}
+.btn.next:hover{background:#0A1A2A}
+.btn.next[disabled]{background:var(--paper-3);color:var(--ink-3);cursor:not-allowed}
+.btn.back{background:none;color:var(--ink-2);padding-left:6px}
+.btn.back:hover{color:var(--ink)}
+.btn.back[hidden]{visibility:hidden;display:inline-flex}
+.btn svg{width:18px;height:18px}
+.hint-lock{font-size:14px;color:var(--ink-3);text-align:right;flex:1}
+
+/* options */
+.q{font-size:20px;line-height:1.4;margin:0 0 16px;font-weight:700}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:flex-start;gap:12px;text-align:left;background:var(--white);border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;line-height:1.35;transition:border-color .15s, background .15s, transform .15s}
+.opt:hover:not([disabled]){border-color:var(--ink-2)}
+.opt .dot{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid var(--line);margin-top:1px;display:grid;place-items:center;transition:all .2s}
+.opt.right{border-color:var(--good);background:#E6F3EB}
+.opt.right .dot{background:var(--good);border-color:var(--good)}
+.opt.right .dot:after{content:"";width:9px;height:5px;border:solid #fff;border-width:0 0 2.5px 2.5px;transform:translateY(-1px) rotate(-45deg)}
+.opt.wrong{border-color:#E3B3AE;background:#F7E9E6;color:var(--ink-3)}
+.opt.wrong .dot{border-color:var(--bad)}
+.opt.wrong .dot:after{content:"×";color:var(--bad);font-weight:700;font-size:16px;line-height:1}
+.opt[disabled]{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:16px;line-height:1.45;display:none}
+.fb.show{display:block;animation:fbIn .3s ease}
+.fb.good{background:#E6F3EB;color:#0F4D2C}
+.fb.bad{background:#F7E9E6;color:#6B1D17}
+.fb.info{background:var(--paper-2);color:var(--ink)}
+@keyframes fbIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.shake{animation:shake .35s}
+@keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(2px)}}
+.wbtag{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2);background:var(--paper-2);border-radius:6px;padding:3px 8px;margin-bottom:10px}
+
+/* choice chips for try pages */
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{background:var(--white);border:2px solid var(--line);border-radius:999px;padding:9px 18px;font-weight:700;font-size:17px;transition:all .15s}
+.chip:hover:not([disabled]){border-color:var(--ink-2)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--white)}
+.chip[disabled]{opacity:.45;cursor:default}
+.range{width:100%;accent-color:var(--port);height:32px}
+.status{font-size:15px;color:var(--ink-3);margin-top:10px}
+
+/* watch controls */
+.ctrl{position:absolute;right:12px;bottom:12px;display:flex;gap:8px;z-index:2}
+.ctrl button{width:44px;height:44px;border-radius:50%;border:0;background:rgba(18,38,58,.82);color:#fff;display:grid;place-items:center;backdrop-filter:blur(4px);transition:background .2s}
+.ctrl button:hover{background:var(--ink)}
+.ctrl svg{width:18px;height:18px}
+.stage .tap{position:absolute;inset:0;display:grid;place-items:center;background:rgba(18,38,58,.18);border:0;z-index:2}
+.stage .tap span{width:84px;height:84px;border-radius:50%;background:var(--ink);display:grid;place-items:center;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.stage .tap svg{width:30px;height:30px;margin-left:5px}
+
+/* cover */
+.cover-num{font-family:var(--head);font-weight:700;font-size:20px;letter-spacing:.14em;text-transform:uppercase;color:var(--port)}
+.cover-meta{display:flex;gap:18px;color:var(--ink-3);font-size:15px;margin-top:4px}
+
+/* ---------- home chart ---------- */
+.home-wrap{position:relative;min-height:100vh;overflow:hidden;background:var(--paper)}
+.home-wrap>svg{display:block;width:100%;height:100vh}
+.wp{cursor:pointer}
+.wp.locked{cursor:default}
+.wp:focus{outline:none}
+.wp:focus-visible .wp-ring{stroke:var(--buoy);stroke-width:4}
+.popup{position:absolute;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--white);border-radius:16px;box-shadow:0 18px 50px rgba(18,38,58,.22),0 0 0 1px var(--line);padding:18px 20px;width:min(440px,calc(100% - 32px));transition:all .25s ease;z-index:4}
+.popup.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.popup .num{font-family:var(--head);font-weight:700;color:var(--port);letter-spacing:.12em;text-transform:uppercase;font-size:15px}
+.popup h2{font-family:var(--head);font-size:32px;line-height:1.05;margin:4px 0 6px}
+.popup p{margin:0 0 14px;color:var(--ink-2);font-size:16px}
+.popup .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.popup .x{border:0;background:none;color:var(--ink-3);font-size:15px;padding:8px}
+.reset{position:absolute;right:14px;top:12px;border:0;background:none;color:var(--ink-3);font-size:13px;padding:6px 8px;border-radius:6px;z-index:3}
+.reset:hover{background:var(--paper-2)}
+
+@media (max-width:900px){
+  body{font-size:17px}
+  .page{grid-template-columns:1fr;gap:16px;padding:14px 16px 20px}
+  .stage{position:relative;top:0;max-height:52vh;aspect-ratio:4/3;width:100%;margin:0 auto}
+  .card{min-height:0}
+  .card h1{font-size:32px}
+  .bar{padding:8px 14px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<noscript><p style="padding:24px">Skipper Ready needs JavaScript turned on.</p></noscript>
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/MotionPathPlugin.min.js"></script>
+<script src="vendor/Draggable.min.js"></script>
+<script src="vendor/DrawSVGPlugin.min.js"></script>
+<script src="js/art.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/ch01.js"></script>
+<script src="js/ch02.js"></script>
+<script src="js/ch02b.js"></script>
+<script>SR.start();</script>
+</body>
+</html>
