@@ -33,6 +33,7 @@
   const chState = id => (store.ch[id] = store.ch[id] || { max: 0, done: false, at: 0 });
   const has = id => !!SR.chapters[id];
   const unlocked = id => has(id) && (teacher || id === 1 || chState(id - 1).done);
+  SR.resetChapter = (id, max) => { store.ch[id] = { max: max || 0, done: false, at: 0 }; save(); };
 
   /* ---------- helpers ---------- */
   const $ = (h) => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstChild; };
