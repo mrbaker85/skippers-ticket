@@ -86,7 +86,7 @@
     app.appendChild(wrap);
     const portrait = window.innerWidth < 760 || window.innerHeight > window.innerWidth * 1.15;
     const W = portrait ? 600 : 1200, H = portrait ? 1180 : 760;
-    const svg = A.el('svg', { viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: portrait ? 'xMidYMin meet' : 'xMidYMid slice', role: 'img', 'aria-label': 'Course chart' }, wrap);
+    const svg = A.el('svg', { viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: portrait ? 'xMidYMin meet' : 'xMidYMid meet', style: 'overflow:visible', role: 'img', 'aria-label': 'Course chart' }, wrap);
     wrap.querySelector('svg').style.height = portrait ? 'auto' : '100vh';
     scope = A.scope(svg);
     const S = scope;
@@ -100,17 +100,18 @@
     const lg = A.el('radialGradient', { id: sid, cx: 0.35, cy: 0.45, r: 0.9 }, A.defs(svg));
     A.el('stop', { offset: 0, 'stop-color': '#F7F2E7' }, lg);
     A.el('stop', { offset: 1, 'stop-color': '#E6DECB' }, lg);
-    A.rect(svg, 0, 0, W, H, { fill: `url(#${sid})` });
+    const X0 = portrait ? 0 : -800, X1 = portrait ? W : W + 800, Y0 = portrait ? 0 : -500, Y1 = portrait ? H : H + 500;
+    A.rect(svg, X0, Y0, X1 - X0, Y1 - Y0, { fill: `url(#${sid})` });
     // graticule
     const gr = A.g(svg, { stroke: '#D9CFB8', 'stroke-width': 1 });
-    for (let x = 0; x <= W; x += 100) A.line(gr, x, 0, x, H);
-    for (let y = 0; y <= H; y += 100) A.line(gr, 0, y, W, y);
+    for (let x = X0; x <= X1; x += 100) A.line(gr, x, Y0, x, Y1);
+    for (let y = Y0; y <= Y1; y += 100) A.line(gr, X0, y, X1, y);
     // depth contours
     const ct = A.g(svg, { fill: 'none', stroke: '#9DBFC6', 'stroke-width': 1.4, 'stroke-dasharray': '2 6', 'stroke-linecap': 'round', opacity: 0.9 });
     const coastX = portrait ? 520 : 935;
     for (let k = 1; k <= 4; k++) {
       let d = '';
-      for (let y = -20; y <= H + 40; y += 40) {
+      for (let y = Y0 - 20; y <= Y1 + 40; y += 40) {
         const x = coastX - k * (portrait ? 34 : 62) + Math.sin(y / 90 + k) * 18 + Math.sin(y / 37) * 6;
         d += (d ? ' L ' : 'M ') + x.toFixed(1) + ' ' + y;
       }
@@ -127,16 +128,16 @@
       A.text(snd, x, y, String(depth), { font: 'body', size: 12, fill: '#6E8C97', italic: true, anchor: 'middle' });
     }
     // coast (WA coast: sea to the west, land to the east)
-    let cd = `M ${W + 10} -10 L ${coastX + 20} -10`;
-    for (let y = 0; y <= H + 20; y += 10) {
+    let cd = `M ${X1 + 10} ${Y0 - 10} L ${coastX + 20} ${Y0 - 10}`;
+    for (let y = Y0; y <= Y1 + 20; y += 10) {
       const x = coastX + Math.sin(y / 70) * 14 + Math.sin(y / 31 + 1) * 6 + Math.sin(y / 13) * 1.5;
       cd += ` L ${x.toFixed(1)} ${y}`;
     }
-    cd += ` L ${W + 10} ${H + 10} Z`;
+    cd += ` L ${X1 + 10} ${Y1 + 10} Z`;
     A.path(svg, cd, { fill: '#E7DBB9', stroke: '#fff', 'stroke-width': 9, 'stroke-linejoin': 'round' });
     A.path(svg, cd, { fill: '#DCCFAA', stroke: '#BDAE86', 'stroke-width': 1.5, transform: 'translate(10,0)' });
     const hatch = A.g(svg, { stroke: '#CBBC93', 'stroke-width': 1 });
-    for (let y = 20; y < H; y += 14) A.line(hatch, coastX + 40, y, W, y);
+    for (let y = Y0 + 20; y < Y1; y += 14) A.line(hatch, coastX + 40, y, X1, y);
     // island
     if (!portrait) {
       A.path(svg, 'M 560 470 q 30 -20 70 -8 q 22 10 12 26 q -30 18 -70 10 q -24 -8 -12 -28 z', { fill: '#E7DBB9', stroke: '#fff', 'stroke-width': 6 });
